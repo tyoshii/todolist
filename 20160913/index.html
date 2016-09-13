@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+        <head>
+                <meta http-equiv="content-type" content="text/html; charset=utf-8">
+                <title>todo list by node</title>
+                <script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+<script type="text/javascript" src="/socket.io/socket.io.js"></script>
+        </head>
+        <body>
+                <h1>todo list</h1>
+                <div id="todolist"></div>
+
+                <h2>add todo</h2>
+                <input type="text" name="todo" id="todo-text">
+<input type="submit" value="追加" onclick="addtodo()">
+
+<script type="text/javascript">
+        var socket = io.connect("http://localhost:3000");
+
+        socket.on("connect", function(){});
+        socket.on("disconnect", function(){});
+
+        // server からtodo受け取り
+        socket.on("s2c_message", function(data) { appendTodo(data) });
+
+        function appendTodo(data) {
+                console.log(data);
+                var $li = $("<li>").text(data.todo);
+                console.log($li);
+                $("div#todolist").append($li);
+        }
+
+        // add todo
+        function addtodo() {
+          var todo = $("#todo-text").val();
+          socket.emit("c2s_message", {todo: todo});
+        }
+</script>
+
+        </body>
+</html>
